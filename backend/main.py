@@ -1,15 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from enum import Enum
+from .models import QuestionRequest
 import os
 from dotenv import load_dotenv
 from google import genai
 
-class StudyTask(str, Enum):
-    explain = "explain"
-    quiz = "quiz"
-    summarize = "summarize"
-    flashcards = "flashcards"
 
 load_dotenv()
 
@@ -26,9 +20,6 @@ Adapt your explanations to the student's question.
 """
 
 app = FastAPI()
-class QuestionRequest(BaseModel):
-    question: str
-    task: StudyTask
 
 @app.get("/")
 def home():
