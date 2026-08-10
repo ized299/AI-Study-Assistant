@@ -1,7 +1,34 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+from enum import Enum
+import os
+from dotenv import load_dotenv
+from google import genai
+
+class StudyTask(str, Enum):
+    explain = "explain"
+    quiz = "quiz"
+    summarize = "summarize"
+    flashcards = "flashcards"
+
+load_dotenv()
+
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=gemini_api_key)
+SYSTEM_INSTRUCTION = """
+You are an AI Study Assistant.
+
+Your purpose is to help students understand academic concepts clearly.
+Explain difficult topics in simple, structured language.
+Use examples when they help understanding.
+Encourage learning and understanding rather than simply giving answers.
+Adapt your explanations to the student's question.
+"""
 
 app = FastAPI()
-
+class QuestionRequest(BaseModel):
+    question: str
+    task: StudyTask
 
 @app.get("/")
 def home():
@@ -25,4 +52,25 @@ def info():
         "author": "Iz",
         "language": "Python",
         "framework": "FastAPI",
+    }
+
+@app.post("/ask-ai")
+def ask_ai(request: QuestionRequest):
+    response = client.models.generate_content(
+        model="gemini-3.6-flash",
+        contents=f"""
+        Task: {request.task.value}
+
+        Student's request:
+        {request.question}
+        """,
+
+        config={
+            "system_instruction": SYSTEM_INSTRUCTION,
+        }
+    )
+
+    return {
+        "question": request.question,
+        "response": response.text
     }
