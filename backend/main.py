@@ -39,7 +39,7 @@ def ask_ai(request: QuestionRequest):
         {request.question}
         """
 
-        response = generate_ai_response(prompt)
+        response = generate_ai_response(prompt, request.task.value)
     
         return {
         "question": request.question,
