@@ -1,23 +1,8 @@
 from fastapi import FastAPI
+
 from .models import QuestionRequest
-import os
-from dotenv import load_dotenv
-from google import genai
+from .services.ai_service import generate_ai_response
 
-
-load_dotenv()
-
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=gemini_api_key)
-SYSTEM_INSTRUCTION = """
-You are an AI Study Assistant.
-
-Your purpose is to help students understand academic concepts clearly.
-Explain difficult topics in simple, structured language.
-Use examples when they help understanding.
-Encourage learning and understanding rather than simply giving answers.
-Adapt your explanations to the student's question.
-"""
 
 app = FastAPI()
 
@@ -47,21 +32,16 @@ def info():
 
 @app.post("/ask-ai")
 def ask_ai(request: QuestionRequest):
-    response = client.models.generate_content(
-        model="gemini-3.6-flash",
-        contents=f"""
+        prompt=f"""
         Task: {request.task.value}
 
         Student's request:
         {request.question}
-        """,
+        """
 
-        config={
-            "system_instruction": SYSTEM_INSTRUCTION,
-        }
-    )
-
-    return {
+        response = generate_ai_response(prompt)
+    
+        return {
         "question": request.question,
-        "response": response.text
-    }
+        "response": response
+        }
