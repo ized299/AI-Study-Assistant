@@ -1,6 +1,8 @@
 import os
+import json
 from dotenv import load_dotenv
 from google import genai
+from ..models import QuizResponse
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -44,6 +46,34 @@ and a concise answer or definition on the back.
 Focus on important concepts and facts.
 """
 
+QUIZ_INSTRUCTION = """
+Create a quiz that helps the student test their understanding.
+
+Create 5 multiple-choice questions.
+
+Each question must contain:
+- question: the question text
+- options: exactly 4 answer choices
+- answer: the correct answer
+- explanation: a brief explanation of why the answer is correct
+
+Make the questions appropriate for the student's topic and educational level.
+
+Return the quiz as valid JSON with this exact structure:
+
+{
+    "questions": [
+        {
+            "question": "Question text",
+            "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+            "answer": "The correct answer",
+            "explanation": "Why this answer is correct"
+        }
+    ]
+}
+
+Do not include Markdown code fences or any text outside the JSON.
+"""
 
 TASK_INSTRUCTIONS = {
     "explain": EXPLAIN_INSTRUCTION,
@@ -66,4 +96,7 @@ def generate_ai_response(prompt, task):
             """
         }
     )
+    if task == "quiz":
+        quiz_data = json.loads(response.text)
+        return QuizResponse(**quiz_data)
     return response.text

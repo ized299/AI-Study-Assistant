@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .models import QuestionRequest
+from .models import QuestionRequest, AIResponse
 from .services.ai_service import generate_ai_response
 
 
@@ -30,7 +30,7 @@ def info():
         "framework": "FastAPI",
     }
 
-@app.post("/ask-ai")
+@app.post("/ask-ai", response_model=AIResponse)
 def ask_ai(request: QuestionRequest):
         prompt=f"""
         Task: {request.task.value}
@@ -43,5 +43,6 @@ def ask_ai(request: QuestionRequest):
     
         return {
         "question": request.question,
+        "task": request.task.value,
         "response": response
         }

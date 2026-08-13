@@ -10,3 +10,17 @@ class StudyTask(str, Enum):
 class QuestionRequest(BaseModel):
     question: str
     task: StudyTask
+
+class QuizQuestion(BaseModel):
+    question: str
+    options: list[str]
+    answer: str
+    explanation: str
+
+class QuizResponse(BaseModel):
+    questions: list[QuizQuestion]
+
+class AIResponse(BaseModel):
+    question: str
+    task: str
+    response: str | QuizResponse
