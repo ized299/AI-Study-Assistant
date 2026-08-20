@@ -2,7 +2,7 @@ import os
 import json
 from dotenv import load_dotenv
 from google import genai
-from ..models import QuizResponse
+from ..models import QuizResponse, FlashcardResponse
 
 load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
@@ -75,6 +75,32 @@ Return the quiz as valid JSON with this exact structure:
 Do not include Markdown code fences or any text outside the JSON.
 """
 
+FLASHCARDS_INSTRUCTION = """
+Create study flashcards that help the student review the topic.
+
+Create 5 flashcards.
+
+Each flashcard must contain:
+- front: a clear question, term, or concept
+- back: a concise answer, definition, or explanation
+
+Focus on important concepts that a student should remember.
+
+Return the flashcards as valid JSON with this exact structure:
+
+{
+    "flashcards": [
+        {
+            "front": "Question or term",
+            "back": "Answer or definition"
+        }
+    ]
+}
+
+Do not include Markdown code fences or any text outside the JSON.
+"""
+
+
 TASK_INSTRUCTIONS = {
     "explain": EXPLAIN_INSTRUCTION,
     "quiz": QUIZ_INSTRUCTION,
@@ -99,4 +125,9 @@ def generate_ai_response(prompt, task):
     if task == "quiz":
         quiz_data = json.loads(response.text)
         return QuizResponse(**quiz_data)
+
+    if task == "flashcards":
+        flashcard_data = json.loads(response.text)
+        return FlashcardResponse(**flashcard_data)
+    
     return response.text

@@ -20,7 +20,14 @@ class QuizQuestion(BaseModel):
 class QuizResponse(BaseModel):
     questions: list[QuizQuestion]
 
+class Flashcard(BaseModel):
+    front: str
+    back: str
+
+class FlashcardResponse(BaseModel):
+    flashcards: list[Flashcard]
+
 class AIResponse(BaseModel):
     question: str
     task: str
-    response: str | QuizResponse
+    response: str | QuizResponse | FlashcardResponse
