@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from .models import QuestionRequest, AIResponse
 from .services.ai_service import generate_ai_response
@@ -39,10 +39,20 @@ def ask_ai(request: QuestionRequest):
         {request.question}
         """
 
-        response = generate_ai_response(prompt, request.task.value)
+        try: 
+            response = generate_ai_response(
+                prompt,
+                request.task.value
+            )
     
-        return {
-        "question": request.question,
-        "task": request.task.value,
-        "response": response
+            return {
+            "question": request.question,
+            "task": request.task.value,
+            "response": response
         }
+
+        except Exception:
+            raise HTTPException(
+                 status_code=500, 
+                 detail="The AI servive could not process your request. Please try again."
+                )
