@@ -1,10 +1,18 @@
 from fastapi import FastAPI, HTTPException
-
+from fastapi.middleware.cors import CORSMiddleware
 from .models import QuestionRequest, AIResponse
 from .services.ai_service import generate_ai_response
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def home():

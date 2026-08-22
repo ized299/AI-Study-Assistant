@@ -25,26 +25,25 @@ Use examples where helpful.
 Focus on helping the student understand the concept.
 """
 
-QUIZ_INSTRUCTION = """
-Create a quiz that helps the student test their understanding.
-Use clear questions appropriate for the student's topic.
-Include multiple-choice options where appropriate.
-Provide the correct answers and brief explanations after the questions.
-"""
 
 SUMMARIZE_INSTRUCTION = """
-Summarize the student's provided topic or content clearly and concisely.
-Focus on the most important ideas and key points.
-Do not add unnecessary information that is not present in the student's content.
-Organize the summary so it is easy for a student to review.
+Summarize the student's provided content for quick student revision.
+
+Keep only the most important ideas, facts, definitions, and concepts.
+Remove repetition, minor details, and information that is not essential
+to understanding the main topic.
+
+The summary should be significantly shorter than the original content.
+Aim for approximately 20-30% of the original length when enough content
+is provided.
+
+Use short paragraphs or bullet points to make the summary easy to scan.
+Do not introduce information that is not present in the student's content.
+
+The goal is to help the student quickly review the material, not to
+rewrite the entire content in slightly fewer words.
 """
 
-FLASHCARDS_INSTRUCTION = """
-Create study flashcards that help the student review the topic.
-Each flashcard should have a clear question or term on the front
-and a concise answer or definition on the back.
-Focus on important concepts and facts.
-"""
 
 QUIZ_INSTRUCTION = """
 Create a quiz that helps the student test their understanding.
